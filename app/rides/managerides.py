@@ -14,7 +14,6 @@ def insert_ride_offers():
     parser.add_argument('name', type=str, required=True)
     parser.add_argument('details', type=str, required=True)
     parser.add_argument('price', type=str, required=True)
-    #parser.add_argument('driver', type=str,required=True)
     parser.add_argument('token', location='headers')
     args = parser.parse_args()
 
