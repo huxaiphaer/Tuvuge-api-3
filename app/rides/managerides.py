@@ -7,6 +7,7 @@ from app.db_config import con
 import psycopg2
 import sys
 from decimal import Decimal
+import datetime
 
 def insert_ride_offers():
     """Getting data from the URL body """
@@ -87,6 +88,48 @@ def get_single_ride(ride_id):
                                       "sorry please , ride offer not found, try searching again"}),
                              404)
 
+
+def create_rideoffer_reuests(rideoffer_id):
+
+    """check whether ride offers exist."""
+    check_ride_offer_cur = con.cursor()
+    check_ride_offer_cur.execute("select id from rides where id='"+rideoffer_id+"'")
+    while True:
+        row = check_ride_offer_cur.fetchone()
+        if row is None:
+             print(row)
+             return make_response(jsonify({"message":
+                                      "sorry please , ride offer not found"}),
+                             404)
+             break
+        else:
+        
+            cur_select_ride_offers = con.cursor()
+            """checking whether the ride request for the user already exists."""
+            cur_select_ride_offers.execute(
+                "select ride_offer_id from requests where passengername = 'Huza' and ride_offer_id='"+rideoffer_id+"'")
+            while True:
+                row = cur_select_ride_offers.fetchone()
+                if row == None:
+                    break
+
+                if str(row[0]).strip() == str(rideoffer_id).strip():
+                    print('db name : ' + str(row[0]) +
+                        '  url name : ' + str(rideoffer_id).strip())
+                    return make_response(jsonify({"message":
+                                                'Sorry,you have  already made a ride request.'}),
+                                        400)
+
+            cur = con.cursor()
+
+            cur.execute("INSERT INTO requests (passengername,time,ride_offer_id,status)  VALUES('Huza','"+str(datetime.datetime.now())+"','"+rideoffer_id+"','0')")
+            con.commit()
+            return make_response(jsonify({
+                'message': 'Ride request created successfully.',
+                'status': 'success'},
+            ), 201)
+
+
     
 
 class GetRides(Resource):
@@ -136,6 +179,20 @@ class GetSingleRide(Resource):
             return get_single_ride(ride_id)
 
 
-        
+class CreateRideRequests(Resource):
+    def post(self, rideoffer_id):
+        try:
+            return create_rideoffer_reuests(rideoffer_id)
+
+        except psycopg2.DatabaseError as e:
+            if con:
+                con.rollback()
+                print(e)
+                create_rideoffer_reuests(rideoffer_id)
+
+            sys.exit(1)
+        except psycopg2.InterfaceError as Ie:
+            print(Ie)
+            return create_rideoffer_reuests(rideoffer_id)
     
 
