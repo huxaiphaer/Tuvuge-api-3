@@ -2,12 +2,13 @@ from flask import Flask, jsonify, make_response
 from flask_restful import Resource, Api, reqparse
 import re
 import json
+import simplejson as json
 from app.db_config import con
 import psycopg2
 import sys
+from decimal import Decimal
 
-
-def insert_data_rides():
+def insert_ride_offers():
     """Getting data from the URL body """
     parser = reqparse.RequestParser()
     parser.add_argument('name', type=str, required=True)
@@ -46,21 +47,54 @@ def insert_data_rides():
     ), 201)
 
 
+def get_ride_offers():
+
+    cur = con.cursor()
+    cur.execute(
+    """select id, name,details,driver, price  from rides""")
+    columns = ('id', 'name', 'details',
+     'driver','price'
+     )
+    results = []
+    for row in cur.fetchall():
+        if row is None:
+             return make_response(jsonify({"message": "No ride offers found."}),
+                                 404)
+        results.append(dict(zip(columns, row)))
+        
+    print (str(results))
+    return make_response(jsonify({"ride_offers": str(results),
+                                          "status": "success"}),
+                                 200)
+
 class GetRides(Resource):
 
     def post(self):
 
         try:
            
-            return insert_data_rides()
+            return insert_ride_offers()
 
         except psycopg2.DatabaseError as e:
             if con:
                 con.rollback()
                 print(e)
-                insert_data_rides()
+                insert_ride_offers()
 
             sys.exit(1)
         except psycopg2.InterfaceError as Ie:
             print(Ie)
-            return insert_data_rides()
+            return insert_ride_offers()
+
+    def get(self):
+        try:
+            return get_ride_offers()
+        except psycopg2.DatabaseError as e:
+            if con:
+                print(e)
+                con.rollback()
+                return get_ride_offers()
+        except psycopg2.InterfaceError as Ie:
+            print(Ie)
+            return get_ride_offers()
+
