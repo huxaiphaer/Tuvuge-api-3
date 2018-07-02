@@ -132,7 +132,7 @@ def create_rideoffer_reuests(rideoffer_id):
                 'status': 'success'},
             ), 201)
 
-
+"""This method is responsible for getting ride offer requests , by filtering with ride offer id's"""
 def get_rideoffer_requests(id):
     cur = con.cursor()
     cur.execute(
@@ -150,8 +150,38 @@ def get_rideoffer_requests(id):
     return make_response(jsonify({"message": "No ride requests found."}),
                                  404)
      
+"""This method is responsible for accepting and rejecting ride offers."""
+def accept_or_reject_ridrequest(rideId,requestId):
+    parser = reqparse.RequestParser()
+    parser.add_argument('status', type=str, required=True)
+    args = parser.parse_args()
+    status = args['status']
+
+    cur = con.cursor()
+    cur.execute(
+        "select id from requests where ride_offer_id= '"+rideId+"' and id ='"+requestId+"' ")
+    for row in cur.fetchall():
+        if row is not  None:
+
+            if int(status) == 0:
+                cur = con.cursor()
+                cur.execute(
+                "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
+                return make_response(jsonify({"message": "ride request  rejected"}),
+                201)
+            else:
+                cur = con.cursor()
+                cur.execute(
+                "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
+                return make_response(jsonify({"message": "ride request  accepted"}),
+                201)
+        return make_response(jsonify({"message": "ride offer is not found please "}),
+                404)
+        
     
 
+
+    
 
 class GetRides(Resource):
 
@@ -231,3 +261,19 @@ class GetRideOfferRequests(Resource):
         except psycopg2.InterfaceError as Ie:
             print(Ie)
             return get_rideoffer_requests(rideId)
+
+class AcceptOrRejectOffer(Resource):
+     def put(self,rideId,requestId):
+        try:
+            return accept_or_reject_ridrequest(rideId,requestId)
+
+        except psycopg2.DatabaseError as e:
+            if con:
+                con.rollback()
+                print(e)
+                accept_or_reject_ridrequest(rideId,requestId)
+
+            sys.exit(1)
+        except psycopg2.InterfaceError as Ie:
+            print(Ie)
+            return accept_or_reject_ridrequest(rideId,requestId)
