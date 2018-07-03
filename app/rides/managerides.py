@@ -8,6 +8,7 @@ import psycopg2
 import sys
 from decimal import Decimal
 import datetime
+from app.users.authentication import decode_token
 
 
 def insert_ride_offers():
@@ -18,6 +19,17 @@ def insert_ride_offers():
     parser.add_argument('price', type=str, required=True)
     parser.add_argument('token', location='headers')
     args = parser.parse_args()
+    # check the token value if its available
+    if not args['token']:
+        return make_response(jsonify({"message":
+                                          "Token is missing"}),
+                                 401)
+    # implementing token decoding                         
+    decoded = decode_token(args['token'])
+    if decoded["status"] == "Failure":
+        return make_response(jsonify({"message":
+                                          decoded["message"]}),
+                                 401)
 
     offer_name = args['name']
     offer_details = args['details']
@@ -49,6 +61,19 @@ def insert_ride_offers():
 
 
 def get_ride_offers():
+    parser = reqparse.RequestParser()
+    parser.add_argument('token', location='headers')
+    args = parser.parse_args()
+    if not args['token']:
+        return make_response(jsonify({"message":
+                                          "Token is missing"}),
+                                 401)
+    # implementing token decoding                         
+    decoded = decode_token(args['token'])
+    if decoded["status"] == "Failure":
+        return make_response(jsonify({"message":
+                                          decoded["message"]}),
+                                 401)
 
     cur = con.cursor()
     cur.execute(
@@ -69,7 +94,24 @@ def get_ride_offers():
                          200)
 
 
+       
 def get_single_ride(ride_id):
+
+    # check the token value if its available
+    """Getting data from the URL body """
+    parser = reqparse.RequestParser()
+    parser.add_argument('token', location='headers')
+    args = parser.parse_args()
+    if not args['token']:
+        return make_response(jsonify({"message":
+                                          "Token is missing"}),
+                                 401)
+    # implementing token decoding                         
+    decoded = decode_token(args['token'])
+    if decoded["status"] == "Failure":
+        return make_response(jsonify({"message":
+                                          decoded["message"]}),
+                                 401)
     cur = con.cursor()
     cur.execute(
         "select id , name , details , driver, price from rides  where id='"+ride_id+"' ")
@@ -91,7 +133,24 @@ def get_single_ride(ride_id):
 
 
 def create_rideoffer_reuests(rideoffer_id):
+    
     """check whether ride offers exist."""
+    parser = reqparse.RequestParser()
+    parser.add_argument('token', location='headers')
+    args = parser.parse_args()
+    if not args['token']:
+        return make_response(jsonify({"message":
+                                          "Token is missing"}),
+                                 401)
+    # implementing token decoding                         
+    decoded = decode_token(args['token'])
+    if decoded["status"] == "Failure":
+        return make_response(jsonify({"message":
+                                          decoded["message"]}),
+                                 401)
+
+
+
     check_ride_offer_cur = con.cursor()
     check_ride_offer_cur.execute(
         "select id from rides where id='"+rideoffer_id+"'")
@@ -100,8 +159,8 @@ def create_rideoffer_reuests(rideoffer_id):
         if row is None:
             print(row)
             return make_response(jsonify({"message":
-                                          "sorry please , ride offer not found"}),404)
-            #break
+                                          "sorry please , ride offer not found"}), 404)
+            # break
         else:
 
             cur_select_ride_offers = con.cursor()
@@ -122,7 +181,7 @@ def create_rideoffer_reuests(rideoffer_id):
 
             cur = con.cursor()
 
-            formated_time_date  = datetime.datetime.now()
+            formated_time_date = datetime.datetime.now()
             formated_time_date.strftime('%H-%M-%Y-%m-%d')
             cur.execute("INSERT INTO requests (passengername,time,ride_offer_id,status)  VALUES('Huza','" +
                         str(formated_time_date)+"','"+rideoffer_id+"','0')")
@@ -132,8 +191,25 @@ def create_rideoffer_reuests(rideoffer_id):
                 'status': 'success'},
             ), 201)
 
+
 """This method is responsible for getting ride offer requests , by filtering with ride offer id's"""
+
+
 def get_rideoffer_requests(id):
+    parser = reqparse.RequestParser()
+    parser.add_argument('token', location='headers')
+    args = parser.parse_args()
+    if not args['token']:
+        return make_response(jsonify({"message":
+                                          "Token is missing"}),
+                                 401)
+    # implementing token decoding                         
+    decoded = decode_token(args['token'])
+    if decoded["status"] == "Failure":
+        return make_response(jsonify({"message":
+                                          decoded["message"]}),
+                                 401)
+
     cur = con.cursor()
     cur.execute(
         "select id, passengername,time  from requests where ride_offer_id= '"+id+"'")
@@ -141,47 +217,70 @@ def get_rideoffer_requests(id):
                )
     results = []
     for row in cur.fetchall():
-        if row is not  None:
+        if row is not None:
             results.append(dict(zip(columns, row)))
             print(str(results))
             return make_response(jsonify({"ride_offers": str(results),
-                                    "status": "success"}),
-                            200)
+                                          "status": "success"}),
+                                 200)
     return make_response(jsonify({"message": "No ride requests found."}),
-                                 404)
-     
+                         404)
+
+
 """This method is responsible for accepting and rejecting ride offers."""
-def accept_or_reject_ridrequest(rideId,requestId):
+
+
+def accept_or_reject_ridrequest(rideId, requestId):
+    
+
+
+
+
+
     parser = reqparse.RequestParser()
     parser.add_argument('status', type=str, required=True)
     args = parser.parse_args()
+    parser.add_argument('token', location='headers')
+
+    if not args['token']:
+        return make_response(jsonify({"message":
+                                          "Token is missing"}),
+                                 401)
+    # implementing token decoding                         
+    decoded = decode_token(args['token'])
+    if decoded["status"] == "Failure":
+        return make_response(jsonify({"message":
+                                          decoded["message"]}),
+                                 401)
+
+
+
+
     status = args['status']
+
+
 
     cur = con.cursor()
     cur.execute(
         "select id from requests where ride_offer_id= '"+rideId+"' and id ='"+requestId+"' ")
     for row in cur.fetchall():
-        if row is not  None:
+        if row is not None:
 
             if int(status) == 0:
                 cur = con.cursor()
                 cur.execute(
-                "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
+                    "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
                 return make_response(jsonify({"message": "ride request  rejected"}),
-                201)
+                                     201)
             else:
                 cur = con.cursor()
                 cur.execute(
-                "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
+                    "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
                 return make_response(jsonify({"message": "ride request  accepted"}),
-                201)
+                                     201)
         return make_response(jsonify({"message": "ride offer is not found please "}),
-                404)
-        
-    
+                             404)
 
-
-    
 
 class GetRides(Resource):
 
@@ -246,8 +345,9 @@ class CreateRideRequests(Resource):
             print(Ie)
             return create_rideoffer_reuests(rideoffer_id)
 
+
 class GetRideOfferRequests(Resource):
-    def get(self,rideId):
+    def get(self, rideId):
         try:
             return get_rideoffer_requests(rideId)
 
@@ -262,18 +362,19 @@ class GetRideOfferRequests(Resource):
             print(Ie)
             return get_rideoffer_requests(rideId)
 
+
 class AcceptOrRejectOffer(Resource):
-     def put(self,rideId,requestId):
+    def put(self, rideId, requestId):
         try:
-            return accept_or_reject_ridrequest(rideId,requestId)
+            return accept_or_reject_ridrequest(rideId, requestId)
 
         except psycopg2.DatabaseError as e:
             if con:
                 con.rollback()
                 print(e)
-                accept_or_reject_ridrequest(rideId,requestId)
+                accept_or_reject_ridrequest(rideId, requestId)
 
             sys.exit(1)
         except psycopg2.InterfaceError as Ie:
             print(Ie)
-            return accept_or_reject_ridrequest(rideId,requestId)
+            return accept_or_reject_ridrequest(rideId, requestId)
