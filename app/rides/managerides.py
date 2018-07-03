@@ -220,7 +220,7 @@ def get_rideoffer_requests(id):
         if row is not None:
             results.append(dict(zip(columns, row)))
             print(str(results))
-            return make_response(jsonify({"ride_offers": str(results),
+            return make_response(jsonify({"ride_offers": str(results).replace('[','').replace(']',''),
                                           "status": "success"}),
                                  200)
     return make_response(jsonify({"message": "No ride requests found."}),
@@ -232,15 +232,10 @@ def get_rideoffer_requests(id):
 
 def accept_or_reject_ridrequest(rideId, requestId):
     
-
-
-
-
-
     parser = reqparse.RequestParser()
     parser.add_argument('status', type=str, required=True)
-    args = parser.parse_args()
     parser.add_argument('token', location='headers')
+    args = parser.parse_args()
 
     if not args['token']:
         return make_response(jsonify({"message":
@@ -253,12 +248,7 @@ def accept_or_reject_ridrequest(rideId, requestId):
                                           decoded["message"]}),
                                  401)
 
-
-
-
     status = args['status']
-
-
 
     cur = con.cursor()
     cur.execute(
