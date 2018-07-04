@@ -320,17 +320,22 @@ class AcceptOrRejectOffer(Resource):
                 if int(status) == 0:
                     cur = con.cursor()
                     cur.execute(
-                        "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
-                    return make_response(jsonify({"message": "ride request  rejected"}),
-                                         201)
+                        "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' "
+                    )
+                    return make_response(
+                        jsonify({"message": "ride request  rejected"}), 200
+                    )
+
                 else:
                     cur = con.cursor()
                     cur.execute(
                         "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
-                    return make_response(jsonify({"message": "ride request  accepted"}),
-                                         201)
-            return make_response(jsonify({"message": "ride offer is not found please "}),
-                                 404)
+                    return make_response(
+                        jsonify({"message": "ride request  accepted"}), 200
+                    )
+            return make_response(
+                jsonify({"message": "ride offer is not found please "}), 404
+            )
 
     def put(self, rideId, requestId):
         try:
