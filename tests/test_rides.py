@@ -63,6 +63,72 @@ class Tests_Requests(BaseTestCase):
             response = self.get_one_rideoffer(token)
             self.assertEqual(response.status_code, 401)
 
+    def test_un_available_ride_offer(self):
+        """test un available ride offers"""
+        with self.client:
+            token = self.get_token()
+            res= self.client.get('/api/v1/rides/200',headers=({"token": token}))
+            #print(res.data)
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 404)
+            self.assertEqual(data.get('message'), "sorry please , ride offer not found, try searching again")
+    
+    def test_no_token_while_creating_requests(self):
+        """test no token while creating requests"""
+        with self.client:
+            #/api/v1/9/requests
+            res= self.client.post('/api/v1/9/requests',headers=({"token": ""}))
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code,401)
+            self.assertEqual(data.get('message'), "Token is missing")
+
+    def test_no_token_getting_ride_requests(self):
+        with self.client:
+            #/api/v1/<rideoffer_id>/requests
+            res= self.client.post('/api/v1/1/requests',headers=({"token": ""}))
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code,401)
+            self.assertEqual(data.get('message'), "Token is missing")
+    def test_no_ride_requests_found(self):
+        token = self.get_token()
+        res= self.client.post('/api/v1/190/requests',headers=({"token": token}))
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code,404)
+        self.assertEqual(data.get('message'), "sorry please , ride offer not found")
+
+    def test_no_token_accepting_or_rejecting(self):
+        res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=0)),
+        content_type='application/json',headers=({"token": ""}))
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code,401)
+        self.assertEqual(data.get('message'), "Token is missing")
+
+    def test_rejecting_ride_offer(self):
+        token = self.get_token()
+        res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=0)),
+        content_type='application/json',headers=({"token": token}))
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code,201)
+        self.assertEqual(data.get('message'), "ride request rejected")
+
+    def test_accepting_ride_offer(self):
+        token = self.get_token()
+        res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=1)),
+        content_type='application/json',headers=({"token": token}))
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code,201)
+        self.assertEqual(data.get('message'), "ride request  accepted")
+
+
+
+
+            
+
+
+
+    
+
+
             
 
 
