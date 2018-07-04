@@ -320,7 +320,8 @@ class AcceptOrRejectOffer(Resource):
                 if int(status) == 0:
                     cur = con.cursor()
                     cur.execute(
-                        "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' "
+                        "update  requests SET status  ='"+status +
+                        "' where ride_offer_id = '"+rideId+"' "
                     )
                     return make_response(
                         jsonify({"message": "ride request rejected"}), 200
