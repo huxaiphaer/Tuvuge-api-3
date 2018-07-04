@@ -22,14 +22,14 @@ def insert_ride_offers():
     # check the token value if its available
     if not args['token']:
         return make_response(jsonify({"message":
-                                          "Token is missing"}),
-                                 401)
-    # implementing token decoding                         
+                                      "Token is missing"}),
+                             401)
+    # implementing token decoding
     decoded = decode_token(args['token'])
     if decoded["status"] == "Failure":
         return make_response(jsonify({"message":
-                                          decoded["message"]}),
-                                 401)
+                                      decoded["message"]}),
+                             401)
 
     offer_name = args['name']
     offer_details = args['details']
@@ -66,14 +66,14 @@ def get_ride_offers():
     args = parser.parse_args()
     if not args['token']:
         return make_response(jsonify({"message":
-                                          "Token is missing"}),
-                                 401)
-    # implementing token decoding                         
+                                      "Token is missing"}),
+                             401)
+    # implementing token decoding
     decoded = decode_token(args['token'])
     if decoded["status"] == "Failure":
         return make_response(jsonify({"message":
-                                          decoded["message"]}),
-                                 401)
+                                      decoded["message"]}),
+                             401)
 
     cur = con.cursor()
     cur.execute(
@@ -94,7 +94,6 @@ def get_ride_offers():
                          200)
 
 
-       
 def get_single_ride(ride_id):
 
     # check the token value if its available
@@ -104,14 +103,14 @@ def get_single_ride(ride_id):
     args = parser.parse_args()
     if not args['token']:
         return make_response(jsonify({"message":
-                                          "Token is missing"}),
-                                 401)
-    # implementing token decoding                         
+                                      "Token is missing"}),
+                             401)
+    # implementing token decoding
     decoded = decode_token(args['token'])
     if decoded["status"] == "Failure":
         return make_response(jsonify({"message":
-                                          decoded["message"]}),
-                                 401)
+                                      decoded["message"]}),
+                             401)
     cur = con.cursor()
     cur.execute(
         "select id , name , details , driver, price from rides  where id='"+ride_id+"' ")
@@ -133,23 +132,20 @@ def get_single_ride(ride_id):
 
 
 def create_rideoffer_reuests(rideoffer_id):
-    
     """check whether ride offers exist."""
     parser = reqparse.RequestParser()
     parser.add_argument('token', location='headers')
     args = parser.parse_args()
     if not args['token']:
         return make_response(jsonify({"message":
-                                          "Token is missing"}),
-                                 401)
-    # implementing token decoding                         
+                                      "Token is missing"}),
+                             401)
+    # implementing token decoding
     decoded = decode_token(args['token'])
     if decoded["status"] == "Failure":
         return make_response(jsonify({"message":
-                                          decoded["message"]}),
-                                 401)
-
-
+                                      decoded["message"]}),
+                             401)
 
     check_ride_offer_cur = con.cursor()
     check_ride_offer_cur.execute(
@@ -201,14 +197,14 @@ def get_rideoffer_requests(id):
     args = parser.parse_args()
     if not args['token']:
         return make_response(jsonify({"message":
-                                          "Token is missing"}),
-                                 401)
-    # implementing token decoding                         
+                                      "Token is missing"}),
+                             401)
+    # implementing token decoding
     decoded = decode_token(args['token'])
     if decoded["status"] == "Failure":
         return make_response(jsonify({"message":
-                                          decoded["message"]}),
-                                 401)
+                                      decoded["message"]}),
+                             401)
 
     cur = con.cursor()
     cur.execute(
@@ -220,7 +216,7 @@ def get_rideoffer_requests(id):
         if row is not None:
             results.append(dict(zip(columns, row)))
             print(str(results))
-            return make_response(jsonify({"ride_offers": str(results).replace('[','').replace(']',''),
+            return make_response(jsonify({"ride_offers": str(results).replace('[', '').replace(']', ''),
                                           "status": "success"}),
                                  200)
     return make_response(jsonify({"message": "No ride requests found."}),
@@ -231,7 +227,7 @@ def get_rideoffer_requests(id):
 
 
 def accept_or_reject_ridrequest(rideId, requestId):
-    
+
     parser = reqparse.RequestParser()
     parser.add_argument('status', type=str, required=True)
     parser.add_argument('token', location='headers')
@@ -239,14 +235,14 @@ def accept_or_reject_ridrequest(rideId, requestId):
 
     if not args['token']:
         return make_response(jsonify({"message":
-                                          "Token is missing"}),
-                                 401)
-    # implementing token decoding                         
+                                      "Token is missing"}),
+                             401)
+    # implementing token decoding
     decoded = decode_token(args['token'])
     if decoded["status"] == "Failure":
         return make_response(jsonify({"message":
-                                          decoded["message"]}),
-                                 401)
+                                      decoded["message"]}),
+                             401)
 
     status = args['status']
 
