@@ -17,6 +17,5 @@ END;
 
 $BODY$;
 
-ALTER FUNCTION public.getrequests(integer)
-    OWNER TO postgres;
+
 

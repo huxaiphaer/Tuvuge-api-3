@@ -15,6 +15,4 @@ BEGIN
 END; 
 $BODY$;
 
-ALTER FUNCTION public.get_ride_requests()
-    OWNER TO postgres;
 

@@ -27,6 +27,4 @@ END;
 
 $BODY$;
 
-ALTER FUNCTION public.login_auth(character varying, text)
-    OWNER TO postgres;
 
