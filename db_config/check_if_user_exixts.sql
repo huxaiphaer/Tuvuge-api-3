@@ -21,6 +21,3 @@ BEGIN
 END;
 
 $BODY$;
-
-ALTER FUNCTION public.check_if_user_exixts(character varying)
-    OWNER TO postgres;
