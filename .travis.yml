@@ -4,6 +4,15 @@ python:
 
 before_script:
   - psql -c 'create database ride_my_way;' -U postgres
+  - psql ride_my_way < db_config/table_create_users.sql
+  - psql ride_my_way < db_config/table_requests.sql
+  - psql ride_my_way < db_config/table_rides.sql
+  - psql ride_my_way < db_config/check_if_user_exixts.sql
+  - psql ride_my_way < db_config/create_users.sql
+  - psql ride_my_way < db_config/get_requests.sql
+  - psql ride_my_way < db_config/get_ride_requests.sql
+  - psql ride_my_way < db_config/login_auth.sql
+  - psql ride_my_way < db_config/passenegers_module.sql
 
 services:
   - postgresql
