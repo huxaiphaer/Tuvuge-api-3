@@ -323,7 +323,7 @@ class AcceptOrRejectOffer(Resource):
                         "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' "
                     )
                     return make_response(
-                        jsonify({"message": "ride request  rejected"}), 200
+                        jsonify({"message": "ride request rejected"}), 200
                     )
 
                 else:
