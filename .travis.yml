@@ -12,6 +12,7 @@ before_script:
   - psql ride_my_way < db_config/get_requests.sql
   - psql ride_my_way < db_config/get_ride_requests.sql
   - psql ride_my_way < db_config/login_auth.sql
+  - psql ride_my_way < db_config/crypto.sql
   - psql ride_my_way < db_config/passengers_module.sql
 
 services:
