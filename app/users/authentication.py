@@ -105,7 +105,6 @@ def login():
         while row is not None:
             status_value = str(row).strip().replace(
                 '(', '').replace(')', '').replace(',', '')
-            print("---------------------{}".format(str(row)))
             if int(status_value) == 0:
                 return make_response(jsonify({"message": "wrong credentials"}),
                                      401)

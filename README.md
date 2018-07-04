@@ -1,5 +1,5 @@
-# Tuvuge-api-3
-# ride-my-way-api
+# Tuvuge-api
+
 
 
 
@@ -15,7 +15,9 @@ To acces this API online visit [API Link ](https://ride-my-way-huzaifah.herokuap
 
 - ```Virtualenv``` - A tool to create isolated virtual environment
 
-### Installation on WIndows
+-```Postgres``` - PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
+
+### Installation on Windows
 
 First clone this repository
 ```
