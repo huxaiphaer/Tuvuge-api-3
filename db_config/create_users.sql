@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.create_users(
+CREATE OR REPLACE FUNCTION create_users(
 	usn character varying,
 	em character varying,
 	pass text,
