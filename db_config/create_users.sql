@@ -21,7 +21,5 @@ END;
 
 $BODY$;
 
-ALTER FUNCTION public.create_users(character varying, character varying, text, integer)
-    OWNER TO postgres;
 
 

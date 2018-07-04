@@ -17,6 +17,4 @@ END;
 
 $BODY$;
 
-ALTER FUNCTION public.passengers_module(integer, integer)
-    OWNER TO postgres;
 
