@@ -103,6 +103,24 @@ class BaseTestCase(unittest.TestCase):
             content_type='application/json',
             headers=({"token": token})
         )
+
+    def get_unavailable_ride_offer(self, ride_id, token):
+        """
+        Function to create a request
+        """
+        self.client.get('/api/v1/rides/{}'.format(ride_id), headers=({"token": token}))
+
+    def accept_or_reject():
+        self.client.put()
+
+    
+        
+
+   
+
+
+    
+
         
 
    
