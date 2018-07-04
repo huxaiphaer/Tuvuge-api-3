@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/huxaiphaer/Tuvuge-api-3.svg?branch=master)](https://travis-ci.org/huxaiphaer/Tuvuge-api-3)
 [![Coverage Status](https://coveralls.io/repos/github/huxaiphaer/Tuvuge-api-3/badge.svg?branch=master)](https://coveralls.io/github/huxaiphaer/Tuvuge-api-3?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b67c22ffdc5eda369208/maintainability)](https://codeclimate.com/github/huxaiphaer/Tuvuge-api-3/maintainability)
 
 
 Ride-my App is a carpooling application
