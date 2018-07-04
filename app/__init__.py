@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from app.rides.managerides import GetRides, GetSingleRide, CreateRideRequests, GetRideOfferRequests, AcceptOrRejectOffer
-from app.users.authentication import SignUp,SignIn
+from app.users.authentication import SignUp, SignIn
 
 
 app = Flask(__name__)
