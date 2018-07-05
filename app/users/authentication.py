@@ -121,7 +121,7 @@ def login():
                     return make_response(jsonify({"token": access_token,
                                                   "message": "User logged in successfully"
                                                   }), 200)
-                    break
+                    
 
                 break
     except TypeError as t:
