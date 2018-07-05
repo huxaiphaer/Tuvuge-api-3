@@ -2,11 +2,9 @@ from flask import Flask, jsonify, make_response
 from flask_restful import Resource, Api, reqparse
 import re
 import json
-import simplejson as json
 from app.db_config import con
 import psycopg2
 import sys
-from decimal import Decimal
 import datetime
 from werkzeug.security import generate_password_hash, \
     check_password_hash
@@ -28,32 +26,26 @@ def create_user():
     password = args['password']
 
     if username.strip() == "" or len(username.strip()) < 2:
-        return make_response(jsonify({"message":
-                                      "invalid username, Enter correct username please"}),
+        return make_response(jsonify({"message": "invalid username, Enter correct username please"}),
                              400)
 
     if re.compile('[!@#$%^&*:;?><.0-9]').match(username):
-        return make_response(jsonify({"message":
-                                      "Invalid characters not allowed, numbers and symbols are not allowed"}),
+        return make_response(jsonify({"message": "Invalid characters not allowed, numbers and symbols are not allowed"}),
                              400)
 
     if not re.match(r"([\w\.-]+)@([\w\.-]+)(\.[\w\.]+$)", email):
-        return make_response(jsonify({"message":
-                                      "Enter valid email"}),
+        return make_response(jsonify({"message": "Enter valid email"}),
                              400)
 
-    if password.strip() == "" or password.strip()==" " or password.strip()=="   ":
-        return make_response(jsonify({"message":
-                                      "Enter password"}),
+    if password.strip() == "" or password.strip() == " " or password.strip() == "   ":
+        return make_response(jsonify({"message": "Password Empty, Enter a valid  password"}),
                              400)
     if len(username) < 2:
-        return make_response(jsonify({"message":
-                                      "username  is too short, < 2"}),
+        return make_response(jsonify({"message": "username  is too short, < 2"}),
                              400)
 
     if len(password) < 5:
-        return make_response(jsonify({"message":
-                                      "Password is too short, < 5"}),
+        return make_response(jsonify({"message": "Password is too short, < 5"}),
                              400)
 
     """creating a sign up  cursor to check for already existing users."""
@@ -67,22 +59,19 @@ def create_user():
             print('go a head and insert data ')
             cur = con.cursor()
             isDriver = '0'
-            cur.callproc('create_users', (username,
-                                          email, password, isDriver,))
+            cur.callproc('create_users', (username,email, password, isDriver,))
             con.commit()
             return make_response(jsonify({
-                'message': 'user created successfully.',
-                'status': 'success'},
+                'message': 'user created successfully.'},
             ), 201)
-            break
+
         else:
             print('this username already exists.')
-            return make_response(jsonify({"message":
-                                          'Sorry,this username is already available.'}),
-                                 400)
-            break
+            return make_response(jsonify({"message": 'Sorry,this username is already available.'}),
+                                 409)
 
-# this method helps to login.
+
+"""this method helps to login."""
 
 
 def login():
@@ -91,7 +80,6 @@ def login():
     parser.add_argument('username', type=str, required=True)
     parser.add_argument('password', type=str, required=True)
     args = parser.parse_args()
-    # get username and password .
     username = args['username']
     password = args['password']
 
@@ -108,7 +96,6 @@ def login():
             if int(status_value) == 0:
                 return make_response(jsonify({"message": "wrong credentials"}),
                                      401)
-                break
             else:
                 cur_get_username = con.cursor()
                 cur_get_username.execute(
@@ -124,6 +111,7 @@ def login():
 
                 break
     except TypeError as t:
+        print(t)
         return make_response(jsonify({"message": "wrong credentials"}),
                              401)
 
@@ -191,6 +179,7 @@ class SignIn(Resource):
         try:
             return login()
         except psycopg2.DatabaseError as e:
+            print(e)
             if con:
                 con.rollback()
                 login()

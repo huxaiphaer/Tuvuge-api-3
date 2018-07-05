@@ -1,5 +1,6 @@
 import json
 import datetime
+from db_config import con
 from tests import BaseTestCase
 
 class Tests_Requests(BaseTestCase):
@@ -111,10 +112,10 @@ class Tests_Requests(BaseTestCase):
             token = self.get_token()
             formated_time_date = datetime.datetime.now()
             formated_time_date.strftime('%H-%M-%Y-%m-%d')
-            respon = self.add_requests("kamoga"+str(formated_time_date),str(formated_time_date),"1","1",token)
+            self.add_requests("kamoga"+str(formated_time_date),str(formated_time_date),"1","1",token)
             response = self.add_requests("kamoga"+str(formated_time_date),str(formated_time_date),"1","1",token)
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.status_code, 409)
 
     def test_no_token_get_one_ride_req(self):
         token = ""
@@ -144,11 +145,11 @@ class Tests_Requests(BaseTestCase):
 
     def test_no_token_getting_ride_requests(self):
         with self.client:
-            #/api/v1/<rideoffer_id>/requests
             res= self.client.post('/api/v1/1/requests',headers=({"token": ""}))
             data = json.loads(res.data.decode())
             self.assertEqual(res.status_code,401)
             self.assertEqual(data.get('message'), "Token is missing")
+
     def test_no_ride_requests_found(self):
         token = self.get_token()
         res= self.client.post('/api/v1/190/requests',headers=({"token": token}))
@@ -159,7 +160,7 @@ class Tests_Requests(BaseTestCase):
     def test_no_token_accepting_or_rejecting(self):
         res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=0)),
         content_type='application/json',headers=({"token": ""}))
-        data = json.loads(res.data.decode())
+        data=json.loads(res.data.decode())
         self.assertEqual(res.status_code,401)
         self.assertEqual(data.get('message'), "Token is missing")
 
@@ -167,17 +168,19 @@ class Tests_Requests(BaseTestCase):
         token = self.get_token()
         res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=0)),
         content_type='application/json',headers=({"token": token}))
-        data = json.loads(res.data.decode())
+        json.loads(res.data.decode())
         self.assertEqual(res.status_code,200)
-        #self.assertEqual(data.get('message'), "ride request rejected")
+
 
     def test_accepting_ride_offer(self):
         token = self.get_token()
         res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=1)),
         content_type='application/json',headers=({"token": token}))
-        data = json.loads(res.data.decode())
+        json.loads(res.data.decode())
         self.assertEqual(res.status_code,200)
-        #self.assertEqual(data.get('message'), "ride request accepted")
+
+   
+       
 
 
 
