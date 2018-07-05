@@ -59,8 +59,7 @@ def create_user():
             print('go a head and insert data ')
             cur = con.cursor()
             isDriver = '0'
-            cur.callproc('create_users', (username,
-                                          email, password, isDriver,))
+            cur.callproc('create_users', (username,email, password, isDriver,))
             con.commit()
             return make_response(jsonify({
                 'message': 'user created successfully.'},
