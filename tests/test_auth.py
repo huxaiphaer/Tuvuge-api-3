@@ -13,7 +13,7 @@ class Test_auth(BaseTestCase):
             # Add the same user and see...
             res = self.register_user("jau", "j@gmail.com", "123456789")
             data1 = json.loads(res.data.decode())
-            self.assertEqual(res.status_code, 400)
+            self.assertEqual(res.status_code, 409)
             self.assertEqual(data1.get('message'), "Sorry,this username is already available.")
 
     def test_successful_login(self):
@@ -70,7 +70,7 @@ class Test_auth(BaseTestCase):
             response = self.register_user("huz", "had@gmail.com", "")
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertEqual(data.get('message'), "Enter password")
+            self.assertEqual(data.get('message'), "Password Empty, Enter a valid  password")
 
     def test_when_short_password_onsignup(self):
         """Test when short password is provided onsignup"""

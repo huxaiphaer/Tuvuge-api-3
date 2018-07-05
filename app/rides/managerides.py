@@ -6,7 +6,6 @@ import simplejson as json
 from app.db_config import con
 import psycopg2
 import sys
-from decimal import Decimal
 import datetime
 from app.users.authentication import decode_token
 
@@ -23,14 +22,12 @@ class GetRides(Resource):
         args = parser.parse_args()
         """ check the token value if its available"""
         if not args['token']:
-            return make_response(jsonify({"message":
-                                          "Token is missing"}),
+            return make_response(jsonify({"message": "Token is missing"}),
                                  401)
         """ implementing token decoding"""
         decoded = decode_token(args['token'])
         if decoded["status"] == "Failure":
-            return make_response(jsonify({"message":
-                                          decoded["message"]}),
+            return make_response(jsonify({"message": decoded["message"]}),
                                  401)
 
         offer_name = args['name']
@@ -49,31 +46,26 @@ class GetRides(Resource):
             if str(row[0]).strip() == str(offer_name).strip():
                 print('db name : ' + str(row[0]) +
                       '  url name : ' + str(offer_name).strip())
-                return make_response(jsonify({"message":
-                                              'Sorry,this ride offer is already available.'}),
+                return make_response(jsonify({"message": 'Sorry,this ride offer is already available.'}),
                                      400)
 
         cur = con.cursor()
         cur.execute("INSERT INTO rides (name,details,price,driver)  VALUES('" +
                     offer_name + "','"+offer_details+"','"+price+"','Huza')")
         con.commit()
-        return make_response(jsonify({
-            'message': 'Ride offer created successfully.'},
-        ), 201)
+        return make_response(jsonify({'message': 'Ride offer created successfully.'},), 201)
 
     def get_ride_offers(self):
         parser = reqparse.RequestParser()
         parser.add_argument('token', location='headers')
         args = parser.parse_args()
         if not args['token']:
-            return make_response(jsonify({"message":
-                                          "Token is missing"}),
+            return make_response(jsonify({"message": "Token is missing"}),
                                  401)
         """ implementing token decoding"""
         decoded = decode_token(args['token'])
         if decoded["status"] == "Failure":
-            return make_response(jsonify({"message":
-                                          decoded["message"]}),
+            return make_response(jsonify({"message": decoded["message"]}),
                                  401)
 
         cur = con.cursor()
@@ -154,9 +146,7 @@ class GetSingleRide(Resource):
                     "ride_offer": str(results).replace("[", "").replace("]", "")
                 }), 200)
 
-        return make_response(jsonify({"message":
-                                      "sorry please , ride offer not found,\
-                                       try searching again"}),
+        return make_response(jsonify({"message": "sorry please , ride offer not found,try searching again"}),
                              404)
 
     def get(self, ride_id):
@@ -185,8 +175,7 @@ class CreateRideRequests(Resource):
         """ implementing token decoding"""
         decoded = decode_token(args['token'])
         if decoded["status"] == "Failure":
-            return make_response(jsonify({"message":
-                                          decoded["message"]}),
+            return make_response(jsonify({"message": decoded["message"]}),
                                  401)
 
         check_ride_offer_cur = con.cursor()
@@ -196,8 +185,8 @@ class CreateRideRequests(Resource):
             row = check_ride_offer_cur.fetchone()
             if row == None:
                 print(row)
-                return make_response(jsonify({"message":
-                                              "sorry please , ride offer not found"}), 404)
+                return make_response(jsonify({"message": "sorry please , ride offer not found"}),
+                                     404)
                 # break
             else:
 
@@ -213,9 +202,8 @@ class CreateRideRequests(Resource):
                     if str(row[0]).strip() == str(rideoffer_id).strip():
                         print('db name : ' + str(row[0]) +
                               '  url name : ' + str(rideoffer_id).strip())
-                        return make_response(jsonify({"message":
-                                                      'Sorry,you have  already made a ride request.'}),
-                                             400)
+                        return make_response(jsonify({"message": 'Sorry,you have  already made a ride request.'}),
+                                             409)
 
             cur = con.cursor()
 
