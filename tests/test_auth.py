@@ -54,7 +54,7 @@ class Test_auth(BaseTestCase):
             response = self.register_user("%2?1@", "ui@gmail.com", "12345")
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertEqual(data.get('message'), "Invalid characters not allowed")
+            self.assertEqual(data.get('message'), "Invalid characters not allowed, numbers and symbols are not allowed")
 
     def test_when_invalid_email_onsignup(self):
         """Test when invalid email is provided onsignup"""

@@ -79,6 +79,28 @@ class BaseTestCase(unittest.TestCase):
             content_type='application/json',
             headers=({"token": token})
         )
+
+
+
+    def add_requests(self, passengername, time, ride_offer_id, status,token):
+            """
+            Function to create a request
+            """
+            return self.client.post(
+                '/api/v1/1/requests',
+                data=json.dumps(
+                    dict(
+                        passengername=passengername,
+                        time=time,
+                        ride_offer_id=ride_offer_id,
+                        status = status
+
+                    )
+                ),
+                content_type='application/json',
+                headers=({"token": token})
+            )
+
     def get_rideoffers(self, token):
         """
         function to return get
@@ -110,9 +132,7 @@ class BaseTestCase(unittest.TestCase):
         """
         self.client.get('/api/v1/rides/{}'.format(ride_id), headers=({"token": token}))
 
-    def accept_or_reject():
-        self.client.put()
-
+    
     
         
 
