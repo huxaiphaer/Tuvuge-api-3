@@ -43,7 +43,7 @@ class GetRides(Resource):
             "select name from rides where driver = 'Huza' and name='"+offer_name+"'")
         while True:
             row = cur_select_ride_offers.fetchone()
-            if row is None:
+            if row == None:
                 break
 
             if str(row[0]).strip() == str(offer_name).strip():
@@ -194,7 +194,7 @@ class CreateRideRequests(Resource):
             "select id from rides where id='"+rideoffer_id+"'")
         while True:
             row = check_ride_offer_cur.fetchone()
-            if row is None:
+            if row == None:
                 print(row)
                 return make_response(jsonify({"message":
                                               "sorry please , ride offer not found"}), 404)
@@ -207,7 +207,7 @@ class CreateRideRequests(Resource):
                     "select ride_offer_id from requests where passengername = 'Huza' and ride_offer_id='"+rideoffer_id+"'")
                 while True:
                     row = cur_select_ride_offers.fetchone()
-                    if row is None:
+                    if row == None:
                         break
 
                     if str(row[0]).strip() == str(rideoffer_id).strip():
