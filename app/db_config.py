@@ -5,5 +5,7 @@ import sys
 
 
 con = None
+#con = psycopg2.connect(
+    #"host='localhost' dbname='ride_my_way' user='postgres' password='namungoona'")
 con = psycopg2.connect(
-    "host='localhost' dbname='ride_my_way' user='postgres' password='namungoona'")
+    "host='ec2-54-83-203-198.compute-1.amazonaws.com' dbname='d3fibeu3klt9e7' user='yffaefhpyvbwkl' password='51460cce946c9ee2a98c6ef8e71e7e193b7e14bb3d0f8c26d8fe02bf5eb91dd6'")#
