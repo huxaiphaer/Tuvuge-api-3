@@ -13,6 +13,29 @@ class Tests_Requests(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 201)
             self.assertEqual(data.get('message'), "Ride offer created successfully.")
+
+    def test_no_token_submit_ride_offers(self):
+            token = ""
+            response = self.add_ride("Easter offer "+str(datetime.datetime.now()),"Get an offer of 30% of this","Huza","8000",token)
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code,  401)
+
+    def test_expired_token_ride_offers(self):
+            token = ""
+            response = self.add_ride("Easter offer "+str(datetime.datetime.now()),"Get an offer of 30% of this","Huza","8000",token)
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code,  401)
+
+    def test_already_available_ride_ride_offer(self):
+            token = self.get_token()
+            response = self.add_ride("Easter offer ","Get an offer of 30% of this","Huza","8000",token)
+            res = self.add_ride("Easter offer ","Get an offer of 30% of this","Huza","8000",token)
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 400)
+            
+
+            
+
                     
 
     def test_get_all_rideoffers(self):
@@ -63,6 +86,16 @@ class Tests_Requests(BaseTestCase):
             response = self.get_one_rideoffer(token)
             self.assertEqual(response.status_code, 401)
 
+    def test_get_one_rideoffer_with_no_token(self):
+        """Tests when one ride offer is retrieved with expired token"""
+        with self.client:
+           
+            token = ""
+            self.add_ride("Easter offer", "Get an offer of 30% of this", "Huza","4000",token)
+            response = self.get_one_rideoffer(token)
+            self.assertEqual(response.status_code, 401)
+
+
     def test_un_available_ride_offer(self):
         """test un available ride offers"""
         with self.client:
@@ -71,8 +104,34 @@ class Tests_Requests(BaseTestCase):
             #print(res.data)
             data = json.loads(res.data.decode())
             self.assertEqual(res.status_code, 404)
-            self.assertEqual(data.get('message'), "sorry please , ride offer not found, try searching again")
+          
+
+    def test_no_existing_ride_requests(self):
+            """Test no exixting ride requests"""
+            token = self.get_token()
+            formated_time_date = datetime.datetime.now()
+            formated_time_date.strftime('%H-%M-%Y-%m-%d')
+            response = self.add_requests("kamoga"+str(formated_time_date),str(formated_time_date),"1","1",token)
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+
+    def test_no_token_get_one_ride_req(self):
+        token = ""
+        res= self.client.get('/api/v1/users/rides/5/requests', 
+        content_type='application/json',headers=({"token": token}))
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code,401)
+            
     
+    def test_expired_token(self):
+        token = "aWOnejbf"
+        res= self.client.get('/api/v1/users/rides/5/requests', 
+        content_type='application/json',headers=({"token": token}))
+        data = json.loads(res.data.decode())
+        self.assertEqual(res.status_code,401)
+
+
+
     def test_no_token_while_creating_requests(self):
         """test no token while creating requests"""
         with self.client:

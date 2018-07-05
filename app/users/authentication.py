@@ -34,7 +34,7 @@ def create_user():
 
     if re.compile('[!@#$%^&*:;?><.0-9]').match(username):
         return make_response(jsonify({"message":
-                                      "Invalid characters not allowed"}),
+                                      "Invalid characters not allowed, numbers and symbols are not allowed"}),
                              400)
 
     if not re.match(r"([\w\.-]+)@([\w\.-]+)(\.[\w\.]+$)", email):
@@ -42,7 +42,7 @@ def create_user():
                                       "Enter valid email"}),
                              400)
 
-    if password.strip() == "":
+    if password.strip() == "" or password.strip()==" " or password.strip()=="   ":
         return make_response(jsonify({"message":
                                       "Enter password"}),
                              400)
@@ -121,7 +121,6 @@ def login():
                     return make_response(jsonify({"token": access_token,
                                                   "message": "User logged in successfully"
                                                   }), 200)
-                    
 
                 break
     except TypeError as t:
