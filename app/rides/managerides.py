@@ -36,13 +36,14 @@ class GetRides(Resource):
         offer_name = args['name']
         offer_details = args['details']
         price = args['price']
-        """creating a ride offer cursor to check for already existing ride offer names."""
+        """creating a ride offer cursor to 
+        check for already existing ride offer names."""
         cur_select_ride_offers = con.cursor()
         cur_select_ride_offers.execute(
             "select name from rides where driver = 'Huza' and name='"+offer_name+"'")
         while True:
             row = cur_select_ride_offers.fetchone()
-            if row == None:
+            if row is None:
                 break
 
             if str(row[0]).strip() == str(offer_name).strip():
@@ -140,7 +141,8 @@ class GetSingleRide(Resource):
                                  401)
         cur = con.cursor()
         cur.execute(
-            "select id , name , details , driver, price from rides  where id='"+ride_id+"' ")
+            "select id , name , details , driver, \
+            price from rides  where id='"+ride_id+"' ")
         columns = ('id', 'name', 'details',
                    'driver', 'price')
         results = []
@@ -153,7 +155,8 @@ class GetSingleRide(Resource):
                 }), 200)
 
         return make_response(jsonify({"message":
-                                      "sorry please , ride offer not found, try searching again"}),
+                                      "sorry please , ride offer not found,\
+                                       try searching again"}),
                              404)
 
     def get(self, ride_id):
@@ -204,7 +207,7 @@ class CreateRideRequests(Resource):
                     "select ride_offer_id from requests where passengername = 'Huza' and ride_offer_id='"+rideoffer_id+"'")
                 while True:
                     row = cur_select_ride_offers.fetchone()
-                    if row == None:
+                    if row is None:
                         break
 
                     if str(row[0]).strip() == str(rideoffer_id).strip():
