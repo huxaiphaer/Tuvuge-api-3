@@ -1,6 +1,6 @@
 import json
 import datetime
-from db_config import con
+
 from tests import BaseTestCase
 
 class Tests_Requests(BaseTestCase):
@@ -18,20 +18,20 @@ class Tests_Requests(BaseTestCase):
     def test_no_token_submit_ride_offers(self):
             token = ""
             response = self.add_ride("Easter offer "+str(datetime.datetime.now()),"Get an offer of 30% of this","Huza","8000",token)
-            data = json.loads(response.data.decode())
+            json.loads(response.data.decode())
             self.assertEqual(response.status_code,  401)
 
     def test_expired_token_ride_offers(self):
             token = ""
             response = self.add_ride("Easter offer "+str(datetime.datetime.now()),"Get an offer of 30% of this","Huza","8000",token)
-            data = json.loads(response.data.decode())
+            json.loads(response.data.decode())
             self.assertEqual(response.status_code,  401)
 
     def test_already_available_ride_ride_offer(self):
             token = self.get_token()
-            response = self.add_ride("Easter offer ","Get an offer of 30% of this","Huza","8000",token)
+            self.add_ride("Easter offer ","Get an offer of 30% of this","Huza","8000",token)
             res = self.add_ride("Easter offer ","Get an offer of 30% of this","Huza","8000",token)
-            data = json.loads(res.data.decode())
+            json.loads(res.data.decode())
             self.assertEqual(res.status_code, 400)
             
 
@@ -46,7 +46,7 @@ class Tests_Requests(BaseTestCase):
             #get a token after sign up 
             token = self.get_token()
             res = self.add_ride("Easter offer","Get an offer of 30% of this","Huza","8000",token)
-            data = json.loads(res.data.decode())
+            json.loads(res.data.decode())
             response = self.get_rideoffers(token)
             self.assertEqual(response.status_code, 200)
 
@@ -103,25 +103,17 @@ class Tests_Requests(BaseTestCase):
             token = self.get_token()
             res= self.client.get('/api/v1/rides/200',headers=({"token": token}))
             #print(res.data)
-            data = json.loads(res.data.decode())
+            json.loads(res.data.decode())
             self.assertEqual(res.status_code, 404)
           
 
-    def test_no_existing_ride_requests(self):
-            """Test no exixting ride requests"""
-            token = self.get_token()
-            formated_time_date = datetime.datetime.now()
-            formated_time_date.strftime('%H-%M-%Y-%m-%d')
-            self.add_requests("kamoga"+str(formated_time_date),str(formated_time_date),"1","1",token)
-            response = self.add_requests("kamoga"+str(formated_time_date),str(formated_time_date),"1","1",token)
-            data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 409)
+    
 
     def test_no_token_get_one_ride_req(self):
         token = ""
         res= self.client.get('/api/v1/users/rides/5/requests', 
         content_type='application/json',headers=({"token": token}))
-        data = json.loads(res.data.decode())
+        json.loads(res.data.decode())
         self.assertEqual(res.status_code,401)
             
     
@@ -129,7 +121,7 @@ class Tests_Requests(BaseTestCase):
         token = "aWOnejbf"
         res= self.client.get('/api/v1/users/rides/5/requests', 
         content_type='application/json',headers=({"token": token}))
-        data = json.loads(res.data.decode())
+        json.loads(res.data.decode())
         self.assertEqual(res.status_code,401)
 
 
