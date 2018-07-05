@@ -111,6 +111,7 @@ class Tests_Requests(BaseTestCase):
             token = self.get_token()
             formated_time_date = datetime.datetime.now()
             formated_time_date.strftime('%H-%M-%Y-%m-%d')
+            respon = self.add_requests("kamoga"+str(formated_time_date),str(formated_time_date),"1","1",token)
             response = self.add_requests("kamoga"+str(formated_time_date),str(formated_time_date),"1","1",token)
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
