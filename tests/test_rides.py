@@ -110,6 +110,7 @@ class Tests_Requests(BaseTestCase):
     
 
     def test_no_token_get_one_ride_req(self):
+        """Test no token get one ride request"""
         token = ""
         res= self.client.get('/api/v1/users/rides/5/requests', 
         content_type='application/json',headers=({"token": token}))
@@ -118,6 +119,7 @@ class Tests_Requests(BaseTestCase):
             
     
     def test_expired_token(self):
+        """Test expired token"""
         token = "aWOnejbf"
         res= self.client.get('/api/v1/users/rides/5/requests', 
         content_type='application/json',headers=({"token": token}))
@@ -136,6 +138,7 @@ class Tests_Requests(BaseTestCase):
             self.assertEqual(data.get('message'), "Token is missing")
 
     def test_no_token_getting_ride_requests(self):
+        """Tests with no token gettiing request"""
         with self.client:
             res= self.client.post('/api/v1/1/requests',headers=({"token": ""}))
             data = json.loads(res.data.decode())
@@ -143,6 +146,7 @@ class Tests_Requests(BaseTestCase):
             self.assertEqual(data.get('message'), "Token is missing")
 
     def test_no_ride_requests_found(self):
+        """Tests no ride requests found"""
         token = self.get_token()
         res= self.client.post('/api/v1/190/requests',headers=({"token": token}))
         data = json.loads(res.data.decode())
@@ -150,6 +154,7 @@ class Tests_Requests(BaseTestCase):
         self.assertEqual(data.get('message'), "sorry please , ride offer not found")
 
     def test_no_token_accepting_or_rejecting(self):
+        """Test no token accepting or rejecting"""
         res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=0)),
         content_type='application/json',headers=({"token": ""}))
         data=json.loads(res.data.decode())
@@ -157,6 +162,7 @@ class Tests_Requests(BaseTestCase):
         self.assertEqual(data.get('message'), "Token is missing")
 
     def test_rejecting_ride_offer(self):
+        """Test no token accepting or rejecting"""
         token = self.get_token()
         res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=0)),
         content_type='application/json',headers=({"token": token}))
@@ -165,6 +171,7 @@ class Tests_Requests(BaseTestCase):
 
 
     def test_accepting_ride_offer(self):
+        """Test accepting ride offer"""
         token = self.get_token()
         res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=1)),
         content_type='application/json',headers=({"token": token}))
