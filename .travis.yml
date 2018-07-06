@@ -24,7 +24,7 @@ install:
 
 # command to run tests
 script:
-  - pytest --cov=app/
+  -nosetests --with-coverage
   - coveralls
 after_success:
   
