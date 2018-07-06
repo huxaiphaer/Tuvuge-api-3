@@ -162,7 +162,7 @@ class Tests_Requests(BaseTestCase):
         self.assertEqual(data.get('message'), "Token is missing")
 
     def test_rejecting_ride_offer(self):
-        """Test no token accepting or rejecting"""
+        """Test  token accepting or rejecting"""
         token = self.get_token()
         res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=0)),
         content_type='application/json',headers=({"token": token}))
