@@ -315,7 +315,8 @@ class AcceptOrRejectOffer(Resource):
                         "' where ride_offer_id = '"+rideId+"' "
                     )
                     return make_response(
-                        jsonify({"message": "ride request rejected"}), 200
+                        jsonify({"message": "ride request rejected"})
+                        , 200
                     )
 
                 else:
@@ -323,13 +324,16 @@ class AcceptOrRejectOffer(Resource):
                     cur.execute(
                         "update  requests SET status  ='"+status+"' where ride_offer_id = '"+rideId+"' ")
                     return make_response(
-                        jsonify({"message": "ride request  accepted"}), 200
+                        jsonify({"message": "ride request  accepted"})
+                        , 200
                     )
             return make_response(
-                jsonify({"message": "ride offer is not found please "}), 404
+                jsonify({"message": "ride offer is not found please "})
+                , 404
             )
         return make_response(
-                jsonify({"message": "no ride offer or ride request found  "}), 404
+                jsonify({"message": "no ride offer or ride request found  "})
+                , 404
             )
 
     def put(self, rideId, requestId):
