@@ -163,14 +163,13 @@ class Tests_Requests(BaseTestCase):
 
   
 
-
-    def test_accepting_ride_offer(self):
+    def test_no_accepting_ride_offer(self):
         """Test accepting ride offer"""
         token = self.get_token()
-        res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=1)),
+        res= self.client.put('/api/v1/users/rides/1/requests/100', data=json.dumps(dict(status=1)),
         content_type='application/json',headers=({"token": token}))
         json.loads(res.data.decode())
-        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.status_code,404)
 
    
        
