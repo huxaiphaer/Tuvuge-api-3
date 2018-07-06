@@ -328,6 +328,9 @@ class AcceptOrRejectOffer(Resource):
             return make_response(
                 jsonify({"message": "ride offer is not found please "}), 404
             )
+        return make_response(
+                jsonify({"message": "no ride offer or ride request found  "}), 404
+            )
 
     def put(self, rideId, requestId):
         try:
