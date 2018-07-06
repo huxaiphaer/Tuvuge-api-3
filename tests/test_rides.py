@@ -161,13 +161,7 @@ class Tests_Requests(BaseTestCase):
         self.assertEqual(res.status_code,401)
         self.assertEqual(data.get('message'), "Token is missing")
 
-    def test_rejecting_ride_offer(self):
-        """Test  token accepting or rejecting"""
-        token = self.get_token()
-        res= self.client.put('/api/v1/users/rides/1/requests/1', data=json.dumps(dict(status=0)),
-        content_type='application/json',headers=({"token": token}))
-        json.loads(res.data.decode())
-        self.assertEqual(res.status_code,200)
+  
 
 
     def test_accepting_ride_offer(self):
