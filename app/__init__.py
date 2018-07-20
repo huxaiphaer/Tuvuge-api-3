@@ -2,12 +2,14 @@ from flask import Flask
 from flask_restful import Api
 from app.rides.managerides import GetRides, GetSingleRide, CreateRideRequests, GetRideOfferRequests, AcceptOrRejectOffer
 from app.users.authentication import SignUp, SignIn
-
+from flask_cors import CORS
 
 app = Flask(__name__)
 
 app.secret_key = "huzaifah"
 api = Api(app)
+CORS(app)
+
 
 api.add_resource(SignUp, '/api/v1/signup')
 api.add_resource(SignIn, '/api/v1/login')
