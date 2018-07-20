@@ -246,7 +246,7 @@ class GetRideOfferRequests(Resource):
         decoded = decode_token(args['token'])
         if decoded["status"] == "Failure":
             return make_response(jsonify({"message":
-                                          decoded["message"hu]}),
+                                          decoded["message"]}),
                                  401)
 
         cur = con.cursor()
