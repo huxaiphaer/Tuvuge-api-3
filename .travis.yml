@@ -1,0 +1,31 @@
+language: python
+python:
+  - "3.6.4"
+
+before_script:
+  - psql -c 'create database ride_my_way;' -U postgres
+  - psql ride_my_way < db_config/table_create_users.sql
+  - psql ride_my_way < db_config/table_requests.sql
+  - psql ride_my_way < db_config/table_rides.sql
+  - psql ride_my_way < db_config/check_if_user_exixts.sql
+  - psql ride_my_way < db_config/create_users.sql
+  - psql ride_my_way < db_config/get_requests.sql
+  - psql ride_my_way < db_config/get_ride_requests.sql
+  - psql ride_my_way < db_config/login_auth.sql
+  - psql ride_my_way < db_config/crypto.sql
+  - psql ride_my_way < db_config/passengers_module.sql
+
+services:
+  - postgresql
+ 
+install:
+  - pip install -r requirements.txt
+  - pip install pytest pytest-cov
+
+# command to run tests
+script:
+  - pytest --cov=app/
+  - coveralls
+after_success:
+  
+  

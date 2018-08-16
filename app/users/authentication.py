@@ -19,11 +19,14 @@ def create_user():
     parser.add_argument('username', type=str, required=True)
     parser.add_argument('email', type=str, required=True)
     parser.add_argument('password', type=str, required=True)
+    parser.add_argument('isdriver', type=int, required=True)
+
     args = parser.parse_args()
 
     username = args['username']
     email = args['email']
     password = args['password']
+    isDriver = args['isdriver']
 
     if username.strip() == "" or len(username.strip()) < 2:
         return make_response(jsonify({"message": "invalid username, Enter correct username please"}),
@@ -58,7 +61,7 @@ def create_user():
         if int(status_value) == 0:
             print('go a head and insert data ')
             cur = con.cursor()
-            isDriver = '0'
+            
             cur.callproc('create_users', (username,email, password, isDriver,))
             con.commit()
             return make_response(jsonify({
