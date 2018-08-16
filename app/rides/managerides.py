@@ -72,7 +72,7 @@ class GetRides(Resource):
 
         cur = con.cursor()
         cur.execute(
-            """select id, name,details,driver, price  from rides""")
+            """select id, name,details,driver, price  from rides order by id desc""")
         columns = ('id', 'name', 'details',
                    'driver', 'price'
                    )
