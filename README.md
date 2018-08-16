@@ -8,7 +8,7 @@
 Ride-my App is a carpooling application
 that provides drivers with the ability to create ride offers and passengers  to join available ride offers.
 
-To acces this API online visit [API Link ](https://ride-my-way-huzaifah.herokuapp.com/)
+To acces this API online visit [API Link ](https://tuvuge-app.herokuapp.com)
 
 ### Requirements Building blocks.
 - ```Python3``` - A programming language that lets us work more quickly (The universe loves speed!).

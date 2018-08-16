@@ -19,6 +19,7 @@ class GetRides(Resource):
         parser.add_argument('details', type=str, required=True)
         parser.add_argument('price', type=str, required=True)
         parser.add_argument('token', location='headers')
+        parser.add_argument('driver_name',type=str,required=True)
         args = parser.parse_args()
         """ check the token value if its available"""
         if not args['token']:
@@ -33,11 +34,12 @@ class GetRides(Resource):
         offer_name = args['name']
         offer_details = args['details']
         price = args['price']
+        driver_name = args['driver_name']
         """creating a ride offer cursor to 
         check for already existing ride offer names."""
         cur_select_ride_offers = con.cursor()
         cur_select_ride_offers.execute(
-            "select name from rides where driver = 'Huza' and name='"+offer_name+"'")
+            "select name from rides where driver = '"+driver_name+"' and name='"+offer_name+"'")
         while True:
             row = cur_select_ride_offers.fetchone()
             if row == None:
@@ -51,7 +53,7 @@ class GetRides(Resource):
 
         cur = con.cursor()
         cur.execute("INSERT INTO rides (name,details,price,driver)  VALUES('" +
-                    offer_name + "','"+offer_details+"','"+price+"','Huza')")
+                    offer_name + "','"+offer_details+"','"+price+"','"+driver_name+"')")
         con.commit()
         return make_response(jsonify({'message': 'Ride offer created successfully.'},), 201)
 
@@ -166,8 +168,10 @@ class CreateRideRequests(Resource):
     def create_rideoffer_reuests(self, rideoffer_id):
         """check whether ride offers exist."""
         parser = reqparse.RequestParser()
+        parser.add_argument('passengername', type=str, required=True)
         parser.add_argument('token', location='headers')
         args = parser.parse_args()
+        passenger_name = args['passengername']
         if not args['token']:
             return make_response(jsonify({"message":
                                           "Token is missing"}),
@@ -193,7 +197,7 @@ class CreateRideRequests(Resource):
                 cur_select_ride_offers = con.cursor()
                 """checking whether the ride request for the user already exists."""
                 cur_select_ride_offers.execute(
-                    "select ride_offer_id from requests where passengername = 'Huza' and ride_offer_id='"+rideoffer_id+"'")
+                    "select ride_offer_id from requests where passengername = '"+passenger_name+"' and ride_offer_id='"+rideoffer_id+"'")
                 while True:
                     row = cur_select_ride_offers.fetchone()
                     if row == None:
@@ -209,7 +213,7 @@ class CreateRideRequests(Resource):
 
             formated_time_date = datetime.datetime.now()
             formated_time_date.strftime('%H-%M-%Y-%m-%d')
-            cur.execute("INSERT INTO requests (passengername,time,ride_offer_id,status)  VALUES('Huza','" +
+            cur.execute("INSERT INTO requests (passengername,time,ride_offer_id,status)  VALUES('"+passenger_name+"','" +
                         str(formated_time_date)+"','"+rideoffer_id+"','0')")
             con.commit()
             return make_response(jsonify({
