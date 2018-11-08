@@ -72,7 +72,7 @@ class GetRides(Resource):
 
         cur = con.cursor()
         cur.execute(
-            """select id, name,details,driver, price  from rides order by id desc""")
+            """select id, name,details,driver, price  from rides ORDER by id DESC """)
         columns = ('id', 'name', 'details',
                    'driver', 'price'
                    )
@@ -282,6 +282,54 @@ class GetRideOfferRequests(Resource):
         except psycopg2.InterfaceError as Ie:
             print(Ie)
             return self.get_rideoffer_requests(rideId)
+
+
+class ViewMyRequests(Resource):
+
+    def get_riderequests_by_user(self, name):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', location='headers')
+        args = parser.parse_args()
+        if not args['token']:
+            return make_response(jsonify({"message":
+                                          "Token is missing"}),
+                                 401)
+        """ implementing token decoding"""
+        decoded = decode_token(args['token'])
+        if decoded["status"] == "Failure":
+            return make_response(jsonify({"message":
+                                          decoded["message"]}),
+                                 401)
+        cur = con.cursor()
+        cur.execute(
+            "select requests.id, name,  passengername,time  from requests join rides on requests.id=rides.id where passengername= '"+name+"'")
+        columns = ('id', 'name' ,'passengername', 'time'
+                   )
+        results = []
+        for row in cur.fetchall():
+            if row is not None:
+                results.append(dict(zip(columns, row)))
+                print(str(results))
+                return make_response(jsonify({"ride_offers": str(results)}),
+                                     200)
+        return make_response(jsonify({"message": "No ride requests found."}),
+                             404)
+
+    def get(self, name):
+        try:
+            return self.get_riderequests_by_user(name)
+
+        except psycopg2.DatabaseError as e:
+            if con:
+                con.rollback()
+                print(e)
+                self.get_riderequests_by_user(name)
+
+            sys.exit(1)
+        except psycopg2.InterfaceError as Ie:
+            print(Ie)
+            return self.get_riderequests_by_user(name)
+
 
 
 class AcceptOrRejectOffer(Resource):
